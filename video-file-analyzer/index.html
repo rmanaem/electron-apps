@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Video File Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        body {
+            text-align: center;
+            margin-top: 100pt;
+        }
+
+        h1 {
+            font-weight: lighter;
+            font-size: 28px;
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+        }
+
+        .item {
+            margin-top: 20pt;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="header">Video File Analyzer</h1>
+    <form class="form">
+        <fieldset>
+            <div class="container">
+                <label>Select a video</label><br>
+                <input class="item" type="file" accept="video/*" /><br>
+                <button class="item" type="submit">Get Info</button><br>
+                <p class="item" id="length"></p>
+            </div>
+        </fieldset>
+    </form>
+
+
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const { path } = document.querySelector('input').files[0];
+
+            ipcRenderer.send('videofilepath', path);
+        });
+
+        ipcRenderer.on('videofilelength', (event, length) => {
+            document.querySelector('#length').innerHTML = `Video is ${length} seconds.`;
+        })
+    </script>
+</body>
+
+</html>
