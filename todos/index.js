@@ -1,14 +1,13 @@
 const electron = require('electron');
-const { read } = require('fs');
 
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 
 let mainWindow;
 let addWindow;
 
 app.on('ready', () => {
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({ webPreferences: { nodeIntegration: true } });
     mainWindow.loadURL(`file://${__dirname}/main.html`);
     mainWindow.on('closed', () => app.quit());
 
@@ -16,11 +15,16 @@ app.on('ready', () => {
     Menu.setApplicationMenu(mainMenu);
 });
 
+ipcMain.on('add todo', (event, todo) => {
+    mainWindow.webContents.send('add todo', todo);
+});
+
 function createAddWindow() {
     addWindow = new BrowserWindow({
         width: 400,
         height: 300,
-        title: 'New Todo'
+        title: 'New Todo',
+        webPreferences: { nodeIntegration: true }
     });
     addWindow.loadURL(`file://${__dirname}/add.html`);
 }
