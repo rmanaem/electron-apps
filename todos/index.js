@@ -21,7 +21,7 @@ function createAddWindow() {
         height: 300,
         title: 'New Todo'
     });
-    // addWindow.loadURL(`file://`)
+    addWindow.loadURL(`file://${__dirname}/add.html`);
 }
 
 const menuTemplate = [
