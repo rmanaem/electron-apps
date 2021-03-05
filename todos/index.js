@@ -5,6 +5,7 @@ const { app, BrowserWindow, Menu } = electron;
 
 
 let mainWindow;
+let addWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({});
@@ -14,12 +15,24 @@ app.on('ready', () => {
     Menu.setApplicationMenu(mainMenu);
 });
 
+function createAddWindow() {
+    addWindow = new BrowserWindow({
+        width: 400,
+        height: 300,
+        title: 'New Todo'
+    });
+    // addWindow.loadURL(`file://`)
+}
+
 const menuTemplate = [
     {
         label: 'File',
         submenu: [
             {
                 label: 'New Todo',
+                click() {
+                    createAddWindow();
+                }
             },
             {
                 label: 'Quit',
