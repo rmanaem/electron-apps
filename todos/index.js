@@ -15,19 +15,20 @@ app.on('ready', () => {
     Menu.setApplicationMenu(mainMenu);
 });
 
-ipcMain.on('add todo', (event, todo) => {
-    mainWindow.webContents.send('add todo', todo);
-});
-
 function createAddWindow() {
     addWindow = new BrowserWindow({
+        webPreferences: { nodeIntegration: true },
         width: 400,
         height: 300,
-        title: 'New Todo',
-        webPreferences: { nodeIntegration: true }
+        title: 'New Todo'
     });
     addWindow.loadURL(`file://${__dirname}/add.html`);
 }
+
+ipcMain.on('add todo', (event, todo) => {
+    mainWindow.webContents.send('add todo', todo);
+    addWindow.close();
+});
 
 const menuTemplate = [
     {
@@ -35,16 +36,13 @@ const menuTemplate = [
         submenu: [
             {
                 label: 'New Todo',
-                click() {
-                    createAddWindow();
-                }
+                accelerator: process.platform === 'darwin' ? 'Command+N' : 'Ctrl+N',
+                click() { createAddWindow(); }
             },
             {
                 label: 'Quit',
                 accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-                click() {
-                    app.quit();
-                }
+                click() { app.quit(); }
             }
         ]
     }
@@ -64,7 +62,5 @@ if (process.env.NODE_ENV != 'production') {
                 focusedWindow.toggleDevTools();
             }
         }]
-
     });
-
 }
