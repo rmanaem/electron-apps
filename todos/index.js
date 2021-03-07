@@ -17,17 +17,19 @@ app.on('ready', () => {
 
 function createAddWindow() {
     addWindow = new BrowserWindow({
-        webPreferences: { nodeIntegration: true },
         width: 400,
         height: 300,
-        title: 'New Todo'
+        title: 'New Todo',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
     });
     addWindow.loadURL(`file://${__dirname}/add.html`);
 }
 
 ipcMain.on('add todo', (event, todo) => {
     mainWindow.webContents.send('add todo', todo);
-    addWindow.close();
 });
 
 const menuTemplate = [
