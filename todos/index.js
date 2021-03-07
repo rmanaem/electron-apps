@@ -7,7 +7,12 @@ let mainWindow;
 let addWindow;
 
 app.on('ready', () => {
-    mainWindow = new BrowserWindow({ webPreferences: { nodeIntegration: true } });
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
     mainWindow.loadURL(`file://${__dirname}/main.html`);
     mainWindow.on('closed', () => app.quit());
 
@@ -26,10 +31,12 @@ function createAddWindow() {
         }
     });
     addWindow.loadURL(`file://${__dirname}/add.html`);
+    addWindow.on('closed', () => addWindow = null);
 }
 
 ipcMain.on('add todo', (event, todo) => {
     mainWindow.webContents.send('add todo', todo);
+    addWindow.close();
 });
 
 const menuTemplate = [
