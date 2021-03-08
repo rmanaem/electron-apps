@@ -5,8 +5,10 @@ const TimerTray = require('./app/timer_tray');
 const { app, BrowserWindow, Tray } = electron;
 
 let mainWindow;
+let tray;
 
 app.on('ready', () => {
+    process.platform === 'win32' ? {} : app.dock.hide();
     mainWindow = new BrowserWindow({
         height: 550,
         width: 350,
@@ -15,8 +17,11 @@ app.on('ready', () => {
         show: false
     });
     mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+    mainWindow.on('blur', () => {
+        mainWindow.hide();
+    })
 
     const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png';
     const iconPath = path.join(__dirname, `./src/assets/${iconName}`);
-    new TimerTray(iconPath, mainWindow);
+    tray = new TimerTray(iconPath, mainWindow);
 });
